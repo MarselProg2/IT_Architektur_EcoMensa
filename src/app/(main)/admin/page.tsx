@@ -16,5 +16,7 @@ export default function AdminPage() {
     )
   }
 
-  return <AdminDashboardWithSuspense />;
+  // We are returning null, because the actual dashboard is now
+  // rendered via the layout. This component only handles the access check.
+  return null;
 }
