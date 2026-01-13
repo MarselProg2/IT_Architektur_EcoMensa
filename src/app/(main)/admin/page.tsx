@@ -2,7 +2,7 @@
 
 import { useRole } from "@/context/role-context";
 import { ROLES } from "@/lib/constants";
-import { AdminDashboard } from "@/components/admin/admin-dashboard";
+import AdminDashboard from "@/components/admin/admin-dashboard";
 import { AccessDenied } from "@/components/admin/access-denied";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
