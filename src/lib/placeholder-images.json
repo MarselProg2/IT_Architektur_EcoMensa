@@ -1,3 +1,34 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "meal-1",
+      "description": "A box filled with various vegetarian dishes.",
+      "imageUrl": "https://images.unsplash.com/photo-1696527785449-9a05db89c7f8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHx2ZWdnaWUlMjBib3h8ZW58MHx8fHwxNzY4Mjk3NDM3fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "veggie box"
+    },
+    {
+      "id": "meal-2",
+      "description": "A hearty meal with meat and potatoes.",
+      "imageUrl": "https://images.unsplash.com/photo-1683989416034-a324e2ec17f5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxtZWF0JTIwcG90YXRvZXN8ZW58MHx8fHwxNzY4Mjk3NDM2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "meat potatoes"
+    },
+    {
+      "id": "meal-3",
+      "description": "A delicious plate of pasta.",
+      "imageUrl": "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwYXN0YSUyMGRpc2h8ZW58MHx8fHwxNzY4Mjc2MTkzfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "pasta dish"
+    },
+    {
+      "id": "meal-4",
+      "description": "A fresh and vibrant salad bowl.",
+      "imageUrl": "https://images.unsplash.com/photo-1625337904517-2b7bf4ea164e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8c2FsYWQlMjBib3dsfGVufDB8fHx8MTc2ODI1MjEwMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "salad bowl"
+    },
+    {
+      "id": "qr-code",
+      "description": "A sample QR code for order pickup.",
+      "imageUrl": "https://images.unsplash.com/photo-1550482768-88b710a445fd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8cXIlMjBjb2RlfGVufDB8fHx8MTc2ODIyNDM3OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "qr code"
+    }
+  ]
 }
