@@ -6,6 +6,7 @@ import { KitchenTerminal } from "@/components/kitchen/kitchen-terminal";
 import { AccessDenied } from "@/components/admin/access-denied";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { KitchenTerminalLoader } from "@/components/kitchen/kitchen-terminal-loader";
 
 function KitchenTerminalSkeleton() {
     return (
@@ -38,7 +39,7 @@ export default function KitchenPage() {
         <div className="container py-8 h-[calc(100vh-4rem)] flex flex-col justify-center">
         {isKitchenStaff ? (
             <Suspense fallback={<KitchenTerminalSkeleton />}>
-                <KitchenTerminal />
+                <KitchenTerminalLoader />
             </Suspense>
         ) : (
             <AccessDenied />
