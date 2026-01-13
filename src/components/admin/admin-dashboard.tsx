@@ -1,7 +1,5 @@
-import { getDashboardStats, getMeals } from "@/lib/data";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MealManager } from "./meal-manager";
-import { AnomalyDetector } from "./anomaly-detector";
 import { StatsCards } from "./stats-cards";
 import type { Meal } from "@/lib/types";
 
@@ -20,15 +18,14 @@ export default function AdminDashboard({ meals, stats }: AdminDashboardProps) {
       <div className="mb-8">
         <h1 className="text-3xl font-bold font-headline">Admin Dashboard</h1>
         <p className="text-muted-foreground">
-          Steuerung der Mensa-Auslastung und KI-basierte Abfallanalyse.
+          Steuerung der Mensa-Auslastung.
         </p>
       </div>
       
       <Tabs defaultValue="overview" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="overview">Übersicht (KPIs)</TabsTrigger>
           <TabsTrigger value="manage">Pakete verwalten</TabsTrigger>
-          <TabsTrigger value="ai">Smart Insights (KI)</TabsTrigger>
         </TabsList>
         
         <TabsContent value="overview" className="space-y-4">
@@ -37,11 +34,6 @@ export default function AdminDashboard({ meals, stats }: AdminDashboardProps) {
         
         <TabsContent value="manage" className="space-y-4">
           <MealManager meals={meals} />
-        </TabsContent>
-        
-        <TabsContent value="ai" className="space-y-4">
-          {/* Implementiert die "Smart Insights" Anforderung  */}
-          <AnomalyDetector meals={meals} /> 
         </TabsContent>
       </Tabs>
     </div>
