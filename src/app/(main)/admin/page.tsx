@@ -24,6 +24,14 @@ function AdminDashboardSkeleton() {
     )
 }
 
+function AdminDashboardLoader() {
+    return (
+      <Suspense fallback={<AdminDashboardSkeleton/>}>
+        <AdminDashboard />
+      </Suspense>
+    );
+}
+
 export default function AdminPage() {
   const { currentUser } = useRole();
 
@@ -35,9 +43,5 @@ export default function AdminPage() {
     )
   }
 
-  return (
-    <Suspense fallback={<AdminDashboardSkeleton/>}>
-      <AdminDashboard />
-    </Suspense>
-  );
+  return <AdminDashboardLoader />;
 }
