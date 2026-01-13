@@ -2,10 +2,10 @@
 
 import { useRole } from "@/context/role-context";
 import { ROLES } from "@/lib/constants";
-import AdminDashboard from "@/components/admin/admin-dashboard";
 import { AccessDenied } from "@/components/admin/access-denied";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { AdminDashboardLoader } from "@/components/admin/admin-dashboard-loader";
 
 function AdminDashboardSkeleton() {
     return (
@@ -24,10 +24,10 @@ function AdminDashboardSkeleton() {
     )
 }
 
-function AdminDashboardLoader() {
+function AdminDashboardWithSuspense() {
     return (
       <Suspense fallback={<AdminDashboardSkeleton/>}>
-        <AdminDashboard />
+        <AdminDashboardLoader />
       </Suspense>
     );
 }
@@ -43,5 +43,5 @@ export default function AdminPage() {
     )
   }
 
-  return <AdminDashboardLoader />;
+  return <AdminDashboardWithSuspense />;
 }

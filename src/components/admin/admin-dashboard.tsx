@@ -3,16 +3,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MealManager } from "./meal-manager";
 import { AnomalyDetector } from "./anomaly-detector";
 import { StatsCards } from "./stats-cards";
+import type { Meal } from "@/lib/types";
 
-// WICHTIG: 'async' hinzugefügt, da wir 'await' nutzen
-export default async function AdminDashboard() {
-  // Parallel fetching für bessere Performance (Promise.all)
-  // Das verhindert den "Wasserfall-Effekt" beim Laden
-  const [meals, stats] = await Promise.all([
-    getMeals(),
-    getDashboardStats()
-  ]);
+interface AdminDashboardProps {
+  meals: Meal[];
+  stats: {
+    revenue: number;
+    packagesSold: number;
+    remainingPackages: number;
+  };
+}
 
+export default function AdminDashboard({ meals, stats }: AdminDashboardProps) {
   return (
     <div className="container py-8">
       <div className="mb-8">
