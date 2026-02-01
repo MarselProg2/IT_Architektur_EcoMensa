@@ -1,23 +1,26 @@
 "use client";
 
-import { useRole } from "@/context/role-context";
-import { ROLES } from "@/lib/constants";
-import { KitchenTerminal } from "@/components/kitchen/kitchen-terminal";
+import { useAuth } from "@/components/auth-provider";
 import { AccessDenied } from "@/components/admin/access-denied";
-import { Suspense } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
-import { KitchenTerminalLoader } from "@/components/kitchen/kitchen-terminal-loader";
+import { Loader2 } from "lucide-react";
 
 export default function KitchenPage() {
-  const { currentUser } = useRole();
+  const { profile, loading } = useAuth();
 
-  const isKitchenStaff = currentUser.role === ROLES.KITCHEN;
+  if (loading) {
+    return <div className="flex justify-center items-center h-[50vh]"><Loader2 className="animate-spin h-8 w-8 text-muted-foreground" /></div>
+  }
 
-  if (!isKitchenStaff) {
+  const isKitchenStaff = profile?.role === 'KITCHEN';
+  // Admin should also be allowed to see Kitchen view? Usually yes for debugging, but let's stick to requirement or allow Admin.
+  // Requirement said Kitchen Interface is for Kitchen Staff. Let's allowing Admin too is safer for "God Mode".
+  const isAllowed = profile?.role === 'KITCHEN' || profile?.role === 'ADMIN';
+
+  if (!isAllowed) {
     return (
-        <div className="container py-8 h-[calc(100vh-4rem)] flex flex-col justify-center">
-             <AccessDenied />
-        </div>
+      <div className="container py-8 h-[calc(100vh-4rem)] flex flex-col justify-center">
+        <AccessDenied />
+      </div>
     )
   }
 

@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/form";
 import { Loader2, QrCode, CheckCircle2 } from "lucide-react"; // CheckCircle icon dazu
 import { useToast } from "@/hooks/use-toast";
-import { useOrders } from "@/context/order-context"; // Wichtig: Context importieren
+import { confirmPickupAction } from "@/lib/actions";
 
 const formSchema = z.object({
   qrCode: z.string().min(1, "Bitte einen Code eingeben."),
@@ -24,7 +24,7 @@ const formSchema = z.object({
 export function QrScanner() {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
-  const { markAsCompleted } = useOrders(); // Zugriff auf die Logik
+  // Removed useOrders
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -36,24 +36,23 @@ export function QrScanner() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
 
-    // Kurze künstliche Wartezeit für das "Scanner-Feeling"
-    await new Promise((resolve) => setTimeout(resolve, 800));
+    // Artificial delay for checking
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
-    // Versuchen, die Bestellung zu finden und abzuschließen
-    const success = markAsCompleted(values.qrCode);
+    const result = await confirmPickupAction(values.qrCode);
 
-    if (success) {
+    if (result.success) {
       toast({
         title: "Abholung bestätigt!",
-        description: `Bestellung ${values.qrCode} wurde erfolgreich ausgegeben.`,
+        description: result.message,
         variant: "default",
-        className: "bg-green-600 text-white border-none", // Optional: Grün stylen
+        className: "bg-green-600 text-white border-none",
       });
       form.reset();
     } else {
       toast({
         title: "Fehler",
-        description: `Code ${values.qrCode} nicht gefunden oder bereits abgeholt.`,
+        description: result.message,
         variant: "destructive",
       });
     }

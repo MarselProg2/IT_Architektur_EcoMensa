@@ -1,6 +1,6 @@
 "use client";
 
-import { useRole } from "@/context/role-context";
+import { useAuth } from "@/components/auth-provider";
 import { Leaf, Ticket } from "lucide-react"; // <--- Ticket Icon importieren
 import Link from "next/link";
 import {
@@ -16,13 +16,8 @@ import { CartSheet } from "./student/cart-sheet";
 import { Button } from "./ui/button"; // <--- Button importieren
 
 export function Header() {
-  const { currentUser, setCurrentUser, availableUsers } = useRole();
+  const { user, profile } = useAuth();
   const pathname = usePathname();
-
-  const handleRoleChange = (uid: string) => {
-    const user = availableUsers.find((u) => u.uid === uid);
-    if (user) setCurrentUser(user);
-  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -45,26 +40,45 @@ export function Header() {
             >
               Reserve
             </Link>
-            <Link
-              href="/admin"
-              className={cn(
-                "transition-colors hover:text-foreground/80",
-                pathname === "/admin" ? "text-foreground" : "text-foreground/60"
-              )}
-            >
-              Admin
-            </Link>
-            <Link
-              href="/kitchen"
-              className={cn(
-                "transition-colors hover:text-foreground/80",
-                pathname === "/kitchen"
-                  ? "text-foreground"
-                  : "text-foreground/60"
-              )}
-            >
-              Kitchen
-            </Link>
+            {/* Show Admin/Kitchen links only if authorized */}
+            {profile?.role === 'ADMIN' && (
+              <Link
+                href="/admin"
+                className={cn(
+                  "transition-colors hover:text-foreground/80",
+                  pathname === "/admin" ? "text-foreground" : "text-foreground/60"
+                )}
+              >
+                Admin
+              </Link>
+            )}
+            {profile?.role === 'KITCHEN' && (
+              <Link
+                href="/kitchen"
+                className={cn(
+                  "transition-colors hover:text-foreground/80",
+                  pathname === "/kitchen"
+                    ? "text-foreground"
+                    : "text-foreground/60"
+                )}
+              >
+                Kitchen
+              </Link>
+            )}
+            {/* Admin should also see Kitchen? Maybe not strict requirement but useful */}
+            {profile?.role === 'ADMIN' && (
+              <Link
+                href="/kitchen"
+                className={cn(
+                  "transition-colors hover:text-foreground/80",
+                  pathname === "/kitchen"
+                    ? "text-foreground"
+                    : "text-foreground/60"
+                )}
+              >
+                Kitchen
+              </Link>
+            )}
           </nav>
         </div>
 
@@ -80,33 +94,28 @@ export function Header() {
           {/* Warenkorb */}
           <CartSheet />
 
-          {/* Profil Umschalter */}
-          <div className="flex items-center space-x-2 border-l pl-4 ml-2">
-            <Avatar className="h-8 w-8">
-              <AvatarFallback className="bg-secondary text-secondary-foreground">
-                {currentUser.name.charAt(0)}
-              </AvatarFallback>
-            </Avatar>
-            <Select value={currentUser.uid} onValueChange={handleRoleChange}>
-              <SelectTrigger className="w-[160px] border-none shadow-none focus:ring-0">
-                <div className="flex flex-col items-start text-left">
-                  <span className="font-semibold text-xs truncate w-full">
-                    {currentUser.name}
-                  </span>
-                  <span className="text-[10px] text-muted-foreground uppercase tracking-wider">
-                    {currentUser.role}
-                  </span>
-                </div>
-              </SelectTrigger>
-              <SelectContent>
-                {availableUsers.map((user) => (
-                  <SelectItem key={user.uid} value={user.uid}>
-                    {user.name} ({user.role})
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          {/* Profil Anzeige (kein Switcher mehr) */}
+          {user ? (
+            <div className="flex items-center space-x-2 border-l pl-4 ml-2">
+              <Avatar className="h-8 w-8">
+                <AvatarFallback className="bg-secondary text-secondary-foreground">
+                  {profile?.name?.charAt(0) || user.email?.charAt(0) || "U"}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex flex-col items-start text-left">
+                <span className="font-semibold text-xs truncate w-full max-w-[120px]">
+                  {profile?.name || user.email}
+                </span>
+                <span className="text-[10px] text-muted-foreground uppercase tracking-wider">
+                  {profile?.role || "LOADING..."}
+                </span>
+              </div>
+            </div>
+          ) : (
+            <Link href="/login">
+              <Button variant="outline" size="sm">Login</Button>
+            </Link>
+          )}
         </div>
       </div>
     </header>

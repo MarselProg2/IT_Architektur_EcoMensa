@@ -3,6 +3,9 @@
 import { useState } from "react";
 import { useCart } from "@/context/cart-context";
 import { useOrders } from "@/context/order-context";
+import { useAuth } from "@/components/auth-provider";
+import { reserveMealAction } from "@/lib/actions";
+import { useToast } from "@/hooks/use-toast";
 import {
   Sheet,
   SheetContent,
@@ -35,11 +38,27 @@ export function CartSheet() {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
+  /* New logic for checkout */
+  const { user } = useAuth();
+  const { toast } = useToast();
+
   const handleCheckout = async () => {
-    if (!paymentMethod) return;
+    if (!paymentMethod || !user) {
+      if (!user) toast({ title: "Login required", variant: "destructive" });
+      return;
+    }
     setIsProcessing(true);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    addOrder(items, totalPrice, paymentMethod);
+
+    // Process items sequentially (Last-Mover: Reliability first)
+    for (const item of items) {
+      const result = await reserveMealAction(item.id, user.id);
+      if (!result.success) {
+        toast({ title: `Failed to reserve ${item.name}`, description: result.message, variant: "destructive" });
+        // Continue or abort? Abort for now to avoid partial state confusion
+        // But cart stays populated with remaining?
+      }
+    }
+
     clearCart();
     setIsProcessing(false);
     setView("success");

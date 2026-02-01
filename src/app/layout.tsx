@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { CartProvider } from "@/context/cart-context";
 import { RoleProvider } from "@/context/role-context";
 import { OrderProvider } from "@/context/order-context"; // <--- NEU
+import { AuthProvider } from "@/components/auth-provider";
 
 const fontPoppins = Poppins({
   subsets: ["latin"],
@@ -38,13 +39,13 @@ export default function RootLayout({
           fontPtSans.variable
         )}
       >
-        <RoleProvider>
+        <AuthProvider>
           <OrderProvider>
             {" "}
             {/* <--- NEU: Umschließt den CartProvider */}
             <CartProvider>{children}</CartProvider>
           </OrderProvider>
-        </RoleProvider>
+        </AuthProvider>
         <Toaster />
       </body>
     </html>

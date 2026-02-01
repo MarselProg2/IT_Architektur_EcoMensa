@@ -1,6 +1,6 @@
-"use client";
 
-import { useOrders } from "@/context/order-context";
+
+import { createClient } from "@/lib/supabase/server";
 import {
   Card,
   CardContent,
@@ -14,8 +14,24 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-export default function OrdersPage() {
-  const { orders } = useOrders();
+export default async function OrdersPage() {
+  const supabase = createClient();
+  const { data: { user } } = await (await supabase).auth.getUser();
+
+  if (!user) {
+    return (
+      <div className="container py-10 text-center">
+        <h1 className="text-2xl font-bold mb-4">Bitte einloggen</h1>
+        <Link href="/login"><Button>Login</Button></Link>
+      </div>
+    )
+  }
+
+  const { data: orders } = await (await supabase)
+    .from('orders')
+    .select('*')
+    .eq('student_id', user.id)
+    .order('created_at', { ascending: false });
 
   return (
     <div className="container max-w-4xl py-10 space-y-8">
@@ -25,10 +41,10 @@ export default function OrdersPage() {
             <ArrowLeft className="h-5 w-5" />
           </Button>
         </Link>
-        <h1 className="text-3xl font-bold font-headline">Meine Bestellungen</h1>
+        <h1 className="text-3xl font-bold font-headline">Meine Bestellungen (Historie)</h1>
       </div>
 
-      {orders.length === 0 ? (
+      {!orders || orders.length === 0 ? (
         <div className="text-center py-20 border-2 border-dashed rounded-xl">
           <QrCode className="mx-auto h-12 w-12 text-muted-foreground opacity-20 mb-4" />
           <h3 className="text-lg font-medium">Keine aktiven Tickets</h3>
@@ -42,7 +58,7 @@ export default function OrdersPage() {
       ) : (
         <div className="grid gap-6 md:grid-cols-2">
           {orders.map((order) => {
-            const isCompleted = order.status === "completed";
+            const isCompleted = order.status === "PICKED_UP";
 
             return (
               <Card
@@ -62,19 +78,12 @@ export default function OrdersPage() {
                 >
                   <div className="flex justify-between items-start">
                     <div>
-                      <CardTitle className="flex items-center gap-2">
-                        {order.id}
-                        <Badge
-                          variant="secondary"
-                          className="text-xs font-normal"
-                        >
-                          {order.paymentMethod === "paypal"
-                            ? "PayPal"
-                            : "Karte"}
-                        </Badge>
+                      <CardTitle className="flex items-center gap-2 text-base">
+                        Order #{order.id.slice(0, 8)}
                       </CardTitle>
-                      <CardDescription className="mt-1 flex items-center gap-2">
-                        <Calendar className="h-3 w-3" /> {order.date}
+                      <CardDescription className="mt-1 flex items-center gap-2 text-xs">
+                        <Calendar className="h-3 w-3" /> {new Date(order.created_at).toLocaleDateString()}
+                        <Clock className="h-3 w-3" /> {new Date(order.created_at).toLocaleTimeString()}
                       </CardDescription>
                     </div>
                     {isCompleted ? (
@@ -83,7 +92,7 @@ export default function OrdersPage() {
                       </Badge>
                     ) : (
                       <Badge className="bg-green-600 hover:bg-green-700 animate-pulse">
-                        Bezahlt (Offen)
+                        {order.status}
                       </Badge>
                     )}
                   </div>
@@ -92,31 +101,14 @@ export default function OrdersPage() {
                 <CardContent className="pt-6 grid grid-cols-3 gap-4">
                   {/* Linker Teil: Infos */}
                   <div className="col-span-2 space-y-4">
-                    <div className="space-y-2">
+                    <div className="space-y-1">
                       <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
-                        Gerichte
+                        Code
                       </p>
-                      <ul className="text-sm space-y-1">
-                        {order.items.map((item, idx) => (
-                          <li
-                            key={idx}
-                            className={
-                              isCompleted
-                                ? "line-through text-muted-foreground"
-                                : ""
-                            }
-                          >
-                            {item.name}
-                          </li>
-                        ))}
-                      </ul>
+                      <p className="font-mono text-lg font-bold">{order.qr_code_data}</p>
                     </div>
-
-                    <div className="pt-2 border-t flex justify-between items-center font-bold">
-                      <span>Summe</span>
-                      <span className="text-primary">
-                        ${order.total.toFixed(2)}
-                      </span>
+                    <div className="text-xs text-muted-foreground">
+                      Meal ID: {order.meal_id}
                     </div>
                   </div>
 
@@ -124,17 +116,17 @@ export default function OrdersPage() {
                   <div className="col-span-1 flex flex-col items-center justify-center border-l pl-4">
                     {isCompleted ? (
                       <div className="bg-gray-100 p-2 rounded-lg border mb-2 grayscale opacity-50">
-                        <QrCode className="h-20 w-20 text-gray-400" />
+                        <QrCode className="h-16 w-16 text-gray-400" />
                       </div>
                     ) : (
                       <div className="bg-white p-2 rounded-lg border shadow-sm mb-2">
-                        <QrCode className="h-20 w-20 text-slate-800" />
+                        <QrCode className="h-16 w-16 text-slate-800" />
                       </div>
                     )}
                     <span className="text-[10px] text-muted-foreground text-center">
                       {isCompleted
                         ? "Bereits eingelöst"
-                        : "Am Eco-Counter vorzeigen"}
+                        : "Am Counter zeigen"}
                     </span>
                   </div>
                 </CardContent>
