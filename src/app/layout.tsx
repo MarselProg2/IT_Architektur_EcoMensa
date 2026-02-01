@@ -4,6 +4,10 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
 
+// 1. IMPORT HINZUFÜGEN
+import { CartProvider } from "@/context/cart-context";
+import { RoleProvider } from "@/context/role-context";
+
 const fontPoppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -15,7 +19,6 @@ const fontPtSans = PT_Sans({
   weight: ["400", "700"],
   variable: "--font-pt-sans",
 });
-
 
 export const metadata: Metadata = {
   title: "EcoMensa",
@@ -29,8 +32,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={cn("font-body antialiased", fontPoppins.variable, fontPtSans.variable)}>
-        {children}
+      <body
+        className={cn(
+          "font-body antialiased",
+          fontPoppins.variable,
+          fontPtSans.variable
+        )}
+      >
+        {/* 2. PROVIDER UMSCHLIEßEN ALLES */}
+        <RoleProvider>
+          <CartProvider>{children}</CartProvider>
+        </RoleProvider>
+
         <Toaster />
       </body>
     </html>
