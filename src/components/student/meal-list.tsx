@@ -15,7 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Clock, Tag, ShoppingBag } from "lucide-react";
-import { placeholderImages } from "@/lib/placeholder-images";
+import { placeholderImages, getMealImage } from "@/lib/placeholder-images";
 
 export function MealList({ meals }: { meals: Meal[] }) {
   const { addToCart } = useCart();
@@ -42,10 +42,7 @@ export function MealList({ meals }: { meals: Meal[] }) {
           >
             <CardHeader className="p-0 relative h-48">
               <Image
-                src={
-                  image?.imageUrl ||
-                  `https://picsum.photos/seed/${meal.id}/600/400`
-                }
+                src={getMealImage(meal)}
                 alt={meal.name}
                 fill
                 className="object-cover"

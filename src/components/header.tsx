@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from "@/components/auth-provider";
-import { Leaf, Ticket } from "lucide-react"; // <--- Ticket Icon importieren
+import { Leaf, Ticket, LogOut } from "lucide-react"; // <--- Ticket Icon importieren
 import Link from "next/link";
 import {
   Select,
@@ -16,7 +16,7 @@ import { CartSheet } from "./student/cart-sheet";
 import { Button } from "./ui/button"; // <--- Button importieren
 
 export function Header() {
-  const { user, profile } = useAuth();
+  const { user, profile, signOut } = useAuth();
   const pathname = usePathname();
 
   return (
@@ -110,6 +110,15 @@ export function Header() {
                   {profile?.role || "LOADING..."}
                 </span>
               </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => signOut()}
+                title="Abmelden"
+                className="ml-2 h-8 w-8 text-muted-foreground hover:text-foreground"
+              >
+                <LogOut className="h-4 w-4" />
+              </Button>
             </div>
           ) : (
             <Link href="/login">

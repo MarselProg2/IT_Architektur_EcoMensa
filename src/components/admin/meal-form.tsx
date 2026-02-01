@@ -55,19 +55,19 @@ export function MealForm({ meal, onFinished }: MealFormProps) {
     const mealData = {
       ...values,
       currentStock: values.initialStock,
-      imageId: meal?.imageId || `meal-${Math.floor(Math.random() * 4) + 1}`,
+      imageId: meal?.imageId || "auto",
     };
 
     const result = isEditMode
       ? await updateMealAction(meal.id, {
-          name: values.name,
-          description: values.description,
-          price: values.price,
-          initialStock: values.initialStock,
-          currentStock: values.initialStock, // Reset stock on edit
-          pickupTimeStart: values.pickupTimeStart,
-          pickupTimeEnd: values.pickupTimeEnd,
-        })
+        name: values.name,
+        description: values.description,
+        price: values.price,
+        initialStock: values.initialStock,
+        currentStock: values.initialStock, // Reset stock on edit
+        pickupTimeStart: values.pickupTimeStart,
+        pickupTimeEnd: values.pickupTimeEnd,
+      })
       : await addMealAction(mealData);
 
     if (result.success) {
