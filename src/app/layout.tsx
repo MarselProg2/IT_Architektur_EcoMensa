@@ -3,10 +3,9 @@ import { Poppins, PT_Sans } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
-
-// 1. IMPORT HINZUFÜGEN
 import { CartProvider } from "@/context/cart-context";
 import { RoleProvider } from "@/context/role-context";
+import { OrderProvider } from "@/context/order-context"; // <--- NEU
 
 const fontPoppins = Poppins({
   subsets: ["latin"],
@@ -39,11 +38,13 @@ export default function RootLayout({
           fontPtSans.variable
         )}
       >
-        {/* 2. PROVIDER UMSCHLIEßEN ALLES */}
         <RoleProvider>
-          <CartProvider>{children}</CartProvider>
+          <OrderProvider>
+            {" "}
+            {/* <--- NEU: Umschließt den CartProvider */}
+            <CartProvider>{children}</CartProvider>
+          </OrderProvider>
         </RoleProvider>
-
         <Toaster />
       </body>
     </html>
